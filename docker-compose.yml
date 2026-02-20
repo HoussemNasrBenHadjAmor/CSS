@@ -1,4 +1,5 @@
 services:
+
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: benca_sql
@@ -12,7 +13,28 @@ services:
       - sql_data:/var/opt/mssql
       - ./database/init.sql:/init.sql
       - ./start.sh:/start.sh
+    networks:
+      - app_network  
     # command: ["/bin/bash", "/start.sh"]  #need to be fixed to work automatically when the container starts
+
+
+
+  cssportal_app:
+    build: 
+      context: ./CSS         # path to your Dockerfile
+      dockerfile: Dockerfile
+    container_name: cssportal_app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - sqlserver
+    networks:
+      - app_network
+
 
 volumes:
   sql_data:
+
+networks:
+  app_network:
+    driver: bridge
