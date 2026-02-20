@@ -1,0 +1,25 @@
+@model IEnumerable<HRManagement.Models.DepartmentSalarySummary>
+
+<h2>Department Salary Summary</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Department</th>
+            <th>Total Employees</th>
+            <th>Average Salary</th>
+            <th>Total Salary</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model)
+{
+    <tr>
+        <td>@item.Department</td>
+        <td>@item.TotalEmployees</td>
+        <td>@item.AverageSalary</td>
+        <td>@item.TotalSalary</td>
+    </tr>
+}
+    </tbody>
+</table>

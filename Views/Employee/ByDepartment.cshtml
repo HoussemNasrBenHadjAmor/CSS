@@ -1,0 +1,21 @@
+@model IEnumerable<HRManagement.Models.Employee>
+
+<h2>Employees By Department</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Salary</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model)
+{
+    <tr>
+        <td>@item.FirstName @item.LastName</td>
+        <td>@item.Salary</td>
+    </tr>
+}
+    </tbody>
+</table>

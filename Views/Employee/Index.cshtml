@@ -1,0 +1,33 @@
+@model IEnumerable<HRManagement.Models.Employee>
+
+<h2>Employees</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Salary</th>
+            <th>Increase</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model)
+{
+    <tr>
+        <td>@item.FirstName @item.LastName</td>
+        <td>@item.Department</td>
+        <td>@item.Salary</td>
+        <td>
+            <form asp-action="IncreaseSalary" method="post">
+                <input type="hidden" name="id" value="@item.Id" />
+                <input type="number" name="percentage" placeholder="%" step="0.1" />
+                <button type="submit">Apply</button>
+            </form>
+        </td>
+    </tr>
+}
+    </tbody>
+</table>
+
+<a asp-action="DepartmentSummary">View Department Summary</a>
