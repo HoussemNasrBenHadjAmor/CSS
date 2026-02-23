@@ -21,7 +21,7 @@ services:
 
   cssportal_app:
     build: 
-      context: ./CSS         # path to your Dockerfile
+      context: ./CSS        
       dockerfile: Dockerfile
     container_name: cssportal_app
     environment:
@@ -43,7 +43,6 @@ services:
     build:
       context: ./nginx
       dockerfile: Dockerfile
-    # image:  houssembnasr/isga_nginx_proxy:latest 
     container_name: css-proxy
     ports:
       - "80:80"
