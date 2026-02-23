@@ -1,0 +1,68 @@
+services:
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: benca_sql
+    restart: unless-stopped
+    environment:
+      SA_PASSWORD: "StrongPassword123!"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+      - ./database/init.sql:/init.sql
+      - ./start.sh:/start.sh
+    networks:
+      - app_network  
+    # command: ["/bin/bash", "/start.sh"]  #need to be fixed to work automatically when the container starts
+
+
+
+  cssportal_app:
+    build: 
+      context: ./CSS         # path to your Dockerfile
+      dockerfile: Dockerfile
+    container_name: cssportal_app
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "8080:8080"
+    # volumes:
+    #   - ./CSS:/app 
+    depends_on:
+      - sqlserver
+    networks:
+      - app_network
+  
+
+  # -----------------------------
+  # Nginx Proxy Service
+  # -----------------------------
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    # image:  houssembnasr/isga_nginx_proxy:latest 
+    container_name: css-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: always
+    depends_on:
+      - cssportal_app
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /etc/letsencrypt/live:/etc/letsencrypt/live:ro
+      - /etc/letsencrypt/archive:/etc/letsencrypt/archive:ro
+      - ./nginx/conf.d/frontend.conf:/etc/nginx/conf.d/frontend.conf:ro
+    networks:
+      - app_network
+
+
+volumes:
+  sql_data:
+
+networks:
+  app_network:
+    driver: bridge
