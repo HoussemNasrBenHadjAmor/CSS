@@ -1,0 +1,477 @@
+@model HRManagement.Models.DashboardKpiViewModel
+
+@{
+    ViewData["Title"] = "Complete Dashboard";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<div class="dashboard-wrapper">
+    <!-- Header -->
+    <div class="dashboard-header">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <h1 class="dashboard-title">
+                        <i class="fas fa-chart-line"></i> HR Analytics Dashboard
+                    </h1>
+                    <p class="dashboard-subtitle">Power BI embedded analytics</p>
+                </div>
+                @* <div class="col-auto ms-auto">
+                    <span class="badge bg-success">
+                        <i class="fas fa-circle"></i> Live
+                    </span>
+                </div> *@
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="dashboard-content">
+        <div class="container-fluid">
+
+            <!-- KPI Cards Section -->
+            <div class="row g-4 mb-5">
+                <!-- Total Employees Card -->
+                <div class="col-12 col-md-6">
+                    <div class="kpi-card">
+                        <p class="kpi-title">Total Employees</p>
+                        <h2 class="kpi-big-value">@Model.TotalEmployees</h2>
+                        <p class="kpi-description">All registered employees</p>
+                    </div>
+                </div>
+
+                <!-- Active Employees Card -->
+                <div class="col-12 col-md-6">
+                    <div class="kpi-card">
+                        <p class="kpi-title">Active Employees</p>
+                        <h2 class="kpi-big-value">@Model.ActiveEmployees</h2>
+                        <p class="kpi-description">Currently working</p>
+                    </div>
+                </div>
+
+                <!-- Inactive Employees Card -->
+                <div class="col-12 col-md-6">
+                    <div class="kpi-card">
+                        <p class="kpi-title">Inactive Employees</p>
+                        <h2 class="kpi-big-value">@Model.InactiveEmployees</h2>
+                        <p class="kpi-description">Not active</p>
+                    </div>
+                </div>
+
+                <!-- Departments Card -->
+                <div class="col-12 col-md-6">
+                    <div class="kpi-card">
+                        <p class="kpi-title">Departments</p>
+                        <h2 class="kpi-big-value">@Model.DepartmentsCount</h2>
+                        <p class="kpi-description">Total departments</p>
+                    </div>
+                </div>
+
+                <!-- Total Payroll Card -->
+                <div class="col-12 col-md-6">
+                    <div class="kpi-card">
+                        <p class="kpi-title">Total Payroll</p>
+                        <h2 class="kpi-big-value">@Model.TotalPayroll.ToString("C0", System.Globalization.CultureInfo.GetCultureInfo("en-US"))</h2>
+                        <p class="kpi-description">Monthly total</p>
+                    </div>
+                </div>
+
+                <!-- Average Salary Card -->
+                <div class="col-12 col-md-6">
+                    <div class="kpi-card">
+                        <p class="kpi-title">Average Salary</p>
+                        <h2 class="kpi-big-value">@Model.AverageSalary.ToString("C0", System.Globalization.CultureInfo.GetCultureInfo("en-US"))</h2>
+                        <p class="kpi-description">Per employee</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="section-divider"></div>
+                    <h2 class="section-title">
+                        Power BI Analytics
+                    </h2>
+                </div>
+            </div>
+
+            <!-- Row 1: Employees + Avg Salary -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-card-header">
+                            <div class="chart-card-title">
+                                <i class="fas fa-users"></i>
+                                <span>Employees by Department</span>
+                            </div>
+                        </div>
+                        <div class="chart-card-body">
+                            <iframe title="number_of_employees_by_department" 
+                                    src="https://app.fabric.microsoft.com/view?r=eyJrIjoiMDg5ODgxNjktY2YzZi00YjJjLTgzNDktNTAxOTMwZThiM2M1IiwidCI6ImE3ZWQ5Y2FmLWQ3ZjctNDIyYi1hZGI2LTY3YjNlZDZjNWJkYyJ9" 
+                                    width="100%" 
+                                    height="400" 
+                                    frameborder="0" 
+                                    allowfullscreen="true"></iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-card-header">
+                            <div class="chart-card-title">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <span>Avg Salary by Department</span>
+                            </div>
+                        </div>
+                        <div class="chart-card-body">
+                            <iframe title="average_salary_by_department" 
+                                    src="https://app.fabric.microsoft.com/view?r=eyJrIjoiYTlkYmRiM2ItNDMwZi00NTI4LWFjNTMtZDg0NzcwZDM5ZDcwIiwidCI6ImE3ZWQ5Y2FmLWQ3ZjctNDIyYi1hZGI2LTY3YjNlZDZjNWJkYyJ9" 
+                                    width="100%" 
+                                    height="400" 
+                                    frameborder="0" 
+                                    allowfullscreen="true"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 2: Total Payroll (Full Width) -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-12">
+                    <div class="chart-card">
+                        <div class="chart-card-header">
+                            <div class="chart-card-title">
+                                <i class="fas fa-coins"></i>
+                                <span>Total Payroll by Department</span>
+                            </div>
+                        </div>
+                        <div class="chart-card-body">
+                            <iframe title="total_payroll_by_department" 
+                                    src="https://app.fabric.microsoft.com/view?r=eyJrIjoiODllZDVhY2ItODQ3ZC00Y2I0LWE1OWUtYWZlZTg4NDJiYTY0IiwidCI6ImE3ZWQ5Y2FmLWQ3ZjctNDIyYi1hZGI2LTY3YjNlZDZjNWJkYyJ9" 
+                                    width="100%" 
+                                    height="450" 
+                                    frameborder="0" 
+                                    allowfullscreen="true"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 3: Hiring Trend + Salary Distribution -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-card-header">
+                            <div class="chart-card-title">
+                                <i class="fas fa-arrow-trend-up"></i>
+                                <span>Hiring Trend (Per Month)</span>
+                            </div>
+                        </div>
+                        <div class="chart-card-body">
+                            <iframe title="Number_of_hired_employees_per_month" 
+                                    src="https://app.fabric.microsoft.com/view?r=eyJrIjoiY2ZmOWMyNWEtMGQ1Ni00MTBlLTgxNmUtYjNlZWZjNjQxYjQ5IiwidCI6ImE3ZWQ5Y2FmLWQ3ZjctNDIyYi1hZGI2LTY3YjNlZDZjNWJkYyJ9" 
+                                    width="100%" 
+                                    height="400" 
+                                    frameborder="0" 
+                                    allowfullscreen="true"></iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-card-header">
+                            <div class="chart-card-title">
+                                <i class="fas fa-chart-pie"></i>
+                                <span>Salary Distribution</span>
+                            </div>
+                        </div>
+                        <div class="chart-card-body">
+                            <iframe title="salary_distribution" 
+                                    src="https://app.fabric.microsoft.com/view?r=eyJrIjoiNWVjYTkyNzItNGUyMi00MjZiLTkzODAtMmRlYTNjOWE4ZjVkIiwidCI6ImE3ZWQ5Y2FmLWQ3ZjctNDIyYi1hZGI2LTY3YjNlZDZjNWJkYyJ9" 
+                                    width="100%" 
+                                    height="400" 
+                                    frameborder="0" 
+                                    allowfullscreen="true"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 4: Attendance + Salary by Performance -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-card-header">
+                            <div class="chart-card-title">
+                                <i class="fas fa-calendar-check"></i>
+                                <span>Attendance by Department</span>
+                            </div>
+                        </div>
+                        <div class="chart-card-body">
+                            <iframe title="attendance_by_department_and_status" 
+                                    src="https://app.fabric.microsoft.com/view?r=eyJrIjoiNDVkZDUyNDAtYjJiMy00YTNlLTk0M2MtMWVlMmE3YzdmYzhlIiwidCI6ImE3ZWQ5Y2FmLWQ3ZjctNDIyYi1hZGI2LTY3YjNlZDZjNWJkYyJ9" 
+                                    width="100%" 
+                                    height="400" 
+                                    frameborder="0" 
+                                    allowfullscreen="true"></iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-card-header">
+                            <div class="chart-card-title">
+                                <i class="fas fa-star"></i>
+                                <span>Department Salary by Rating</span>
+                            </div>
+                        </div>
+                        <div class="chart-card-body">
+                            <iframe title="salary_by_performance" 
+                                    src="https://app.fabric.microsoft.com/view?r=eyJrIjoiOGM3NmVlZTUtNjZhMS00NGRiLWI5ZTQtNWMwNjY2NmZiNTRmIiwidCI6ImE3ZWQ5Y2FmLWQ3ZjctNDIyYi1hZGI2LTY3YjNlZDZjNWJkYyJ9" 
+                                    width="100%" 
+                                    height="400" 
+                                    frameborder="0" 
+                                    allowfullscreen="true"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 5: Salary Changes (Full Width) -->
+            <div class="row g-4 mb-5">
+                <div class="col-lg-12">
+                    <div class="chart-card">
+                        <div class="chart-card-header">
+                            <div class="chart-card-title">
+                                <i class="fas fa-history"></i>
+                                <span>Salary Changes by Department</span>
+                            </div>
+                        </div>
+                        <div class="chart-card-body">
+                            <iframe title="average_of_new_salary_and_average_old_salary_by_department" 
+                                    src="https://app.fabric.microsoft.com/view?r=eyJrIjoiNDZiMzU4NTYtOWM5YS00MzVjLWFiNWEtNTk0OTAxNjhmNTZhIiwidCI6ImE3ZWQ5Y2FmLWQ3ZjctNDIyYi1hZGI2LTY3YjNlZDZjNWJkYyJ9" 
+                                    width="100%" 
+                                    height="450" 
+                                    frameborder="0" 
+                                    allowfullscreen="true"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .dashboard-wrapper {
+        min-height: 100vh;
+        padding-bottom: 40px;
+    }
+
+    .dashboard-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 40px 0;
+        margin-bottom: 40px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .dashboard-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .dashboard-title i {
+        font-size: 2.2rem;
+    }
+
+    .dashboard-subtitle {
+        margin: 10px 0 0 0;
+        opacity: 0.9;
+        font-size: 1rem;
+    }
+
+    .dashboard-content {
+        padding: 0 20px;
+    }
+
+    /* KPI Cards */
+    .kpi-card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .kpi-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .kpi-title {
+        font-size: 0.95rem;
+        color: #666;
+        margin: 0;
+        font-weight: 500;
+    }
+
+    .kpi-big-value {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #667eea;
+        margin: 0;
+    }
+
+    .kpi-description {
+        font-size: 0.85rem;
+        color: #999;
+        margin: 0;
+        font-weight: 400;
+    }
+
+    /* Section Divider */
+    .section-divider {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #667eea, transparent);
+        margin-bottom: 20px;
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: white;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .section-title i {
+        font-size: 1.6rem;
+    }
+
+    /* Chart Cards */
+    .chart-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .chart-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .chart-card-header {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        padding: 20px;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .chart-card-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+        margin: 0;
+    }
+
+    .chart-card-title i {
+        font-size: 1.3rem;
+        color: #667eea;
+    }
+
+    .chart-card-body {
+        padding: 15px;
+        background: #f9f9f9;
+    }
+
+    iframe {
+        border-radius: 8px;
+    }
+
+    .badge {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+        font-weight: 600;
+    }
+
+    .badge i {
+        margin-right: 6px;
+        animation: pulse 2s infinite;
+    }
+
+    @@keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .dashboard-title {
+            font-size: 1.8rem;
+        }
+
+        .dashboard-header {
+            padding: 25px 0;
+        }
+
+        .kpi-card {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .kpi-icon {
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+        }
+
+        .kpi-label {
+            font-size: 0.75rem;
+        }
+
+        .kpi-value {
+            font-size: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+        }
+    }
+</style>
+
+</body>
+</html>

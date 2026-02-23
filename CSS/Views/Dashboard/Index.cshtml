@@ -1,0 +1,63 @@
+@{
+    ViewData["Title"] = "HR Dashboard";
+}
+
+<h2>HR Analytics Dashboard</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <canvas id="salaryChart"></canvas>
+    </div>
+
+    <div class="col-md-6">
+        <canvas id="hiringChart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+async function loadSalaryChart() {
+    const response = await fetch('/api/dashboard/salary-by-department');
+    const data = await response.json();
+
+    const labels = data.map(x => x.department);
+    const values = data.map(x => x.averageSalary);
+
+    new Chart(document.getElementById('salaryChart'), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Average Salary',
+                data: values,
+                backgroundColor: 'rgba(54, 162, 235, 0.6)'
+            }]
+        }
+    });
+}
+
+async function loadHiringChart() {
+    const response = await fetch('/api/dashboard/hiring-trend');
+    const data = await response.json();
+
+    const labels = data.map(x => x.month);
+    const values = data.map(x => x.count);
+
+    new Chart(document.getElementById('hiringChart'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Employees Hired',
+                data: values,
+                borderColor: 'green',
+                fill: false
+            }]
+        }
+    });
+}
+
+loadSalaryChart();
+loadHiringChart();
+</script>

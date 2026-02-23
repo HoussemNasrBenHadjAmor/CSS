@@ -1,0 +1,665 @@
+@model HRManagement.Models.DashboardKpiViewModel
+
+@{
+    ViewData["Title"] = "Analytics Dashboard";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<div class="dashboard-wrapper">
+    <!-- Header -->
+    <div class="dashboard-header">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <h1 class="dashboard-title">
+                        <i class="fas fa-chart-line"></i> Analytics Dashboard
+                    </h1>
+                    <p class="dashboard-subtitle">Metrics powered with Chart.js</p>
+                </div>
+                @* <div class="col-auto ms-auto">
+                    <span class="badge bg-success">
+                        <i class="fas fa-circle"></i> Live
+                    </span>
+                </div> *@
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="dashboard-content">
+        <div class="container-fluid">
+
+            <!-- KPI Cards Section -->
+            <div class="row g-4 mb-5">
+                <!-- Total Employees Card -->
+                <div class="col-12 col-md-6">
+                    <div class="kpi-card">
+                        <p class="kpi-title">Total Employees</p>
+                        <h2 class="kpi-big-value">@Model.TotalEmployees</h2>
+                        <p class="kpi-description">All registered employees</p>
+                    </div>
+                </div>
+
+                <!-- Active Employees Card -->
+                <div class="col-12 col-md-6">
+                    <div class="kpi-card">
+                        <p class="kpi-title">Active Employees</p>
+                        <h2 class="kpi-big-value">@Model.ActiveEmployees</h2>
+                        <p class="kpi-description">Currently working</p>
+                    </div>
+                </div>
+
+                <!-- Inactive Employees Card -->
+                <div class="col-12 col-md-6">
+                    <div class="kpi-card">
+                        <p class="kpi-title">Inactive Employees</p>
+                        <h2 class="kpi-big-value">@Model.InactiveEmployees</h2>
+                        <p class="kpi-description">Not active</p>
+                    </div>
+                </div>
+
+                <!-- Departments Card -->
+                <div class="col-12 col-md-6">
+                    <div class="kpi-card">
+                        <p class="kpi-title">Departments</p>
+                        <h2 class="kpi-big-value">@Model.DepartmentsCount</h2>
+                        <p class="kpi-description">Total departments</p>
+                    </div>
+                </div>
+
+                <!-- Total Payroll Card -->
+                <div class="col-12 col-md-6">
+                    <div class="kpi-card">
+                        <p class="kpi-title">Total Payroll</p>
+                        <h2 class="kpi-big-value">@Model.TotalPayroll.ToString("C0", System.Globalization.CultureInfo.GetCultureInfo("en-US"))</h2>
+                        <p class="kpi-description">Monthly total</p>
+                    </div>
+                </div>
+
+                <!-- Average Salary Card -->
+                <div class="col-12 col-md-6">
+                    <div class="kpi-card">
+                        <p class="kpi-title">Average Salary</p>
+                        <h2 class="kpi-big-value">@Model.AverageSalary.ToString("C0", System.Globalization.CultureInfo.GetCultureInfo("en-US"))</h2>
+                        <p class="kpi-description">Per employee</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="section-divider"></div>
+                    <h2 class="section-title">
+                        Chart.js Analytics
+                    </h2>
+                </div>
+            </div>
+
+            <!-- Row 1: Employees by Department + Avg Salary -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-card-header">
+                            <div class="chart-card-title">
+                                <i class="fas fa-users"></i>
+                                <span>Employees by Department</span>
+                            </div>
+                        </div>
+                        <div class="chart-card-body">
+                            <canvas id="employeesByDepartmentChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-card-header">
+                            <div class="chart-card-title">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <span>Average Salary by Department</span>
+                            </div>
+                        </div>
+                        <div class="chart-card-body">
+                            <canvas id="avgSalaryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 2: Total Payroll (Full Width) -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-12">
+                    <div class="chart-card">
+                        <div class="chart-card-header">
+                            <div class="chart-card-title">
+                                <i class="fas fa-coins"></i>
+                                <span>Total Payroll by Department</span>
+                            </div>
+                        </div>
+                        <div class="chart-card-body">
+                            <canvas id="totalPayrollChart" style="max-height: 400px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 3: Hiring Trend + Salary Distribution -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-card-header">
+                            <div class="chart-card-title">
+                                <i class="fas fa-arrow-trend-up"></i>
+                                <span>Hiring Trend (Per Month)</span>
+                            </div>
+                        </div>
+                        <div class="chart-card-body">
+                            <canvas id="hiringTrendChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-card-header">
+                            <div class="chart-card-title">
+                                <i class="fas fa-chart-pie"></i>
+                                <span>Salary Distribution</span>
+                            </div>
+                        </div>
+                        <div class="chart-card-body">
+                            <canvas id="salaryDistributionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 4: Attendance by Status + Salary vs Performance -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-card-header">
+                            <div class="chart-card-title">
+                                <i class="fas fa-calendar-check"></i>
+                                <span>Attendance by Status</span>
+                            </div>
+                        </div>
+                        <div class="chart-card-body">
+                            <canvas id="attendanceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="chart-card">
+                        <div class="chart-card-header">
+                            <div class="chart-card-title">
+                                <i class="fas fa-star"></i>
+                                <span>Salary vs Performance</span>
+                            </div>
+                        </div>
+                        <div class="chart-card-body">
+                            <canvas id="scatterChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 5: Salary Change History (Full Width) -->
+            <div class="row g-4 mb-5">
+                <div class="col-lg-12">
+                    <div class="chart-card">
+                        <div class="chart-card-header">
+                            <div class="chart-card-title">
+                                <i class="fas fa-history"></i>
+                                <span>Salary Change History</span>
+                            </div>
+                        </div>
+                        <div class="chart-card-body">
+                            <canvas id="salaryChangeChart" style="max-height: 400px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<script>
+    const colors = ['#007bff', '#28a745', '#dc3545', '#ffc107', '#17a2b8'];
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: { legend: { display: true, position: 'bottom' } },
+        scales: { y: { beginAtZero: true } }
+    };
+
+    // 1. Employees by Department
+    fetch('/api/chartsdata/employees-by-department')
+        .then(r => r.json())
+        .then(data => {
+            new Chart(document.getElementById('employeesByDepartmentChart'), {
+                type: 'bar',
+                data: {
+                    labels: data.map(d => d.department),
+                    datasets: [{
+                        label: 'Number of Employees',
+                        data: data.map(d => d.count),
+                        backgroundColor: colors,
+                        borderColor: colors,
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }]
+                },
+                options: { ...chartOptions, plugins: { legend: { display: false } } }
+            });
+        });
+
+    // 2. Average Salary by Department
+    fetch('/api/chartsdata/avg-salary-by-department')
+        .then(r => r.json())
+        .then(data => {
+            new Chart(document.getElementById('avgSalaryChart'), {
+                type: 'bar',
+                data: {
+                    labels: data.map(d => d.department),
+                    datasets: [{
+                        label: 'Average Salary',
+                        data: data.map(d => Math.round(d.avgSalary)),
+                        backgroundColor: colors,
+                        borderColor: colors,
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }]
+                },
+                options: { ...chartOptions, plugins: { legend: { display: false } } }
+            });
+        });
+
+    // 3. Total Payroll by Department
+    fetch('/api/chartsdata/total-payroll-by-department')
+        .then(r => r.json())
+        .then(data => {
+            new Chart(document.getElementById('totalPayrollChart'), {
+                type: 'bar',
+                data: {
+                    labels: data.map(d => d.department),
+                    datasets: [{
+                        label: 'Total Payroll',
+                        data: data.map(d => Math.round(d.totalPayroll)),
+                        backgroundColor: '#6f42c1',
+                        borderColor: '#6f42c1',
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }]
+                },
+                options: { ...chartOptions, plugins: { legend: { display: false } } }
+            });
+        });
+
+    // 4. Hiring Trend
+    fetch('/api/chartsdata/hiring-trend')
+        .then(r => r.json())
+        .then(data => {
+            new Chart(document.getElementById('hiringTrendChart'), {
+                type: 'line',
+                data: {
+                    labels: data.map(d => d.yearMonth),
+                    datasets: [{
+                        label: 'Hires per Month',
+                        data: data.map(d => d.count),
+                        borderColor: '#28a745',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 5,
+                        pointBackgroundColor: '#28a745',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: { ...chartOptions, plugins: { legend: { display: false } } }
+            });
+        });
+
+    // 5. Salary Distribution
+    fetch('/api/chartsdata/salary-distribution')
+        .then(r => r.json())
+        .then(data => {
+            new Chart(document.getElementById('salaryDistributionChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(data),
+                    datasets: [{
+                        data: Object.values(data),
+                        backgroundColor: colors,
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    }]
+                },
+                options: { ...chartOptions }
+            });
+        });
+
+    // 6. Attendance by Status (Stacked Bar)
+    fetch('/api/chartsdata/attendance-by-status')
+        .then(r => r.json())
+        .then(data => {
+            const departments = [...new Set(data.map(d => d.department))];
+            const statuses = [...new Set(data.map(d => d.status))];
+            const statusColors = {
+                'Present': '#28a745',
+                'Absent': '#dc3545',
+                'Remote': '#007bff',
+                'Leave': '#ffc107'
+            };
+
+            const datasets = statuses.map(status => ({
+                label: status,
+                data: departments.map(dept => {
+                    const found = data.find(d => d.department === dept && d.status === status);
+                    return found ? found.count : 0;
+                }),
+                backgroundColor: statusColors[status] || '#999',
+                borderRadius: 4
+            }));
+
+            new Chart(document.getElementById('attendanceChart'), {
+                type: 'bar',
+                data: {
+                    labels: departments,
+                    datasets: datasets
+                },
+                options: {
+                    ...chartOptions,
+                    scales: {
+                        x: { stacked: true },
+                        y: { stacked: true, beginAtZero: true }
+                    }
+                }
+            });
+        });
+
+    // 7. Salary vs Performance (Scatter)
+    fetch('/api/chartsdata/salary-vs-performance')
+        .then(r => r.json())
+        .then(data => {
+            new Chart(document.getElementById('scatterChart'), {
+                type: 'bubble',
+                data: {
+                    datasets: [{
+                        label: 'Performance vs Salary',
+                        data: data.map((d, i) => ({
+                            x: d.avgPerformanceRating,
+                            y: d.avgSalary,
+                            r: 15
+                        })),
+                        backgroundColor: colors[0],
+                        borderColor: colors[0],
+                        borderWidth: 2
+                    }]
+                },
+                options: { ...chartOptions }
+            });
+        });
+
+    // 8. Salary Change History
+    fetch('/api/chartsdata/salary-change-history')
+        .then(r => r.json())
+        .then(data => {
+            new Chart(document.getElementById('salaryChangeChart'), {
+                type: 'line',
+                data: {
+                    labels: data.map(d => d.yearMonth),
+                    datasets: [
+                        {
+                            label: 'Avg New Salary',
+                            data: data.map(d => Math.round(d.avgNewSalary)),
+                            borderColor: '#28a745',
+                            backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 5,
+                            pointBackgroundColor: '#28a745',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2
+                        },
+                        {
+                            label: 'Avg Old Salary',
+                            data: data.map(d => Math.round(d.avgOldSalary)),
+                            borderColor: '#dc3545',
+                            backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 5,
+                            pointBackgroundColor: '#dc3545',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2
+                        }
+                    ]
+                },
+                options: { ...chartOptions }
+            });
+        });
+</script>
+
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .dashboard-wrapper {
+        min-height: 100vh;
+        padding-bottom: 40px;
+    }
+
+    .dashboard-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 40px 0;
+        margin-bottom: 40px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .dashboard-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .dashboard-title i {
+        font-size: 2.2rem;
+    }
+
+    .dashboard-subtitle {
+        margin: 10px 0 0 0;
+        opacity: 0.9;
+        font-size: 1rem;
+    }
+
+    .dashboard-content {
+        padding: 0 20px;
+    }
+
+    /* KPI Cards */
+    .kpi-card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .kpi-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .kpi-title {
+        font-size: 0.95rem;
+        color: #666;
+        margin: 0;
+        font-weight: 500;
+    }
+
+    .kpi-big-value {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #667eea;
+        margin: 0;
+    }
+
+    .kpi-description {
+        font-size: 0.85rem;
+        color: #999;
+        margin: 0;
+        font-weight: 400;
+    }
+
+    /* Section Divider */
+    .section-divider {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #667eea, transparent);
+        margin-bottom: 20px;
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: white;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .section-title i {
+        font-size: 1.6rem;
+    }
+
+    /* Chart Cards */
+    .chart-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .chart-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .chart-card-header {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        padding: 20px;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .chart-card-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+        margin: 0;
+    }
+
+    .chart-card-title i {
+        font-size: 1.3rem;
+        color: #667eea;
+    }
+
+    .chart-card-body {
+        padding: 25px;
+        min-height: 300px;
+        position: relative;
+    }
+
+    canvas {
+        max-height: 350px !important;
+    }
+
+    .badge {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+        font-weight: 600;
+    }
+
+    .badge i {
+        margin-right: 6px;
+        animation: pulse 2s infinite;
+    }
+
+    @@keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .dashboard-title {
+            font-size: 1.8rem;
+        }
+
+        .dashboard-header {
+            padding: 25px 0;
+        }
+
+        .kpi-card {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .kpi-icon {
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+        }
+
+        .kpi-label {
+            font-size: 0.75rem;
+        }
+
+        .kpi-value {
+            font-size: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+        }
+
+        .chart-card-body {
+            min-height: 250px;
+        }
+    }
+</style>
+
+</body>
+</html>

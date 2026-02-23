@@ -1,0 +1,32 @@
+@model IEnumerable<Employee>
+
+<h2>Employees</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Salary</th>
+            <th>Hire Date</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var emp in Model)
+        {
+            <tr>
+                <td>@emp.FullName</td>
+                <td>@emp.Department?.DepartmentName</td>
+                <td>@emp.BaseSalary</td>
+                <td>@emp.HireDate.ToShortDateString()</td>
+                <!-- <td>
+                    <a asp-action="IncreaseSalary" asp-route-id="@emp.Id"
+                       class="btn btn-success btn-sm">
+                        +10%
+                    </a>
+                </td> -->
+            </tr>
+        }
+    </tbody>
+</table>
